@@ -35,23 +35,80 @@ public class DAOContactInDatabase implements DAOGeneric<Contact> {
 				
 	}
 
+	@Override
+	public Contact readById(int id) {
+		Contact c = null;
+		try 
+		{
+			String request = "SELECT * FROM nouvellebdd.contact WHERE contact.contact_id =(?);";
+			PreparedStatement pstmnt = connectionDatabase.getConnection().prepareStatement(request);
+			pstmnt.setInt(1, id);
+			ResultSet rs = pstmnt.executeQuery();
+			while(rs.next())
+			{
+				c = new Contact(rs.getInt("contact_id"),rs.getString("nom_contact"),rs.getString("prenom_contact"),
+						rs.getInt("age"),rs.getString("numero_telephone"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return c;
+	}
+	
+	
 	public Contact readByName(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		Contact c = null;
+		try 
+		{
+			String request = "SELECT * FROM nouvellebdd.contact WHERE contact.nom_contact =(?);";
+			PreparedStatement pstmnt = connectionDatabase.getConnection().prepareStatement(request);
+			pstmnt.setString(1, name);
+			ResultSet rs = pstmnt.executeQuery();
+			while(rs.next())
+			{
+				c = new Contact(rs.getString("nom_contact"),rs.getString("prenom_contact"),
+						rs.getInt("age"),rs.getString("numero_telephone"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return c;
 	}
 
-
-
-
 	public void update(Contact c) {
-		// TODO Auto-generated method stub
-		
+		System.out.println(c);
+		try {
+			String request = "UPDATE nouvellebdd.contact SET "
+					+ " nom_contact=?,"
+					+ " age=?,"
+					+ " prenom_contact=?,"
+					+ " numero_telephone=?"
+					+ " WHERE contact_id=?";
+			PreparedStatement pstmnt = connectionDatabase.getConnection().prepareStatement(request);
+			pstmnt.setString(1, c.getNomContact());
+			pstmnt.setInt(2, c.getAge());
+			pstmnt.setString(3, c.getPrenomContact());
+			pstmnt.setString(4, c.getNumeroTelephone());
+			pstmnt.setInt(5, c.getId());
+			pstmnt.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 
 	public void deleteById(int id)
 	{
 		
+		try {
+			String request = "DELETE FROM nouvellebdd.contact WHERE contact_id=?";
+			PreparedStatement pstmnt = connectionDatabase.getConnection().prepareStatement(request);
+			pstmnt.setInt(1, id);
+			pstmnt.execute();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void deleteByName(Contact c) {
@@ -71,7 +128,7 @@ public class DAOContactInDatabase implements DAOGeneric<Contact> {
 			
 			while (rs.next()) 
 			{
-				Contact c = new Contact(rs.getString("nom_contact"),rs.getString("prenom_contact"),
+				Contact c = new Contact(rs.getInt("contact_id"), rs.getString("nom_contact"),rs.getString("prenom_contact"),
 						rs.getInt("age"),rs.getString("numero_telephone")
 						);
 
@@ -85,6 +142,8 @@ public class DAOContactInDatabase implements DAOGeneric<Contact> {
 		
 		return contacts;
 	}
+
+
 
 
 
