@@ -6,7 +6,7 @@ import java.util.List;
 public interface DAOGeneric<T> {
 	public void create(T c );
 	
-	public T readById(int id);
+	public T readById(int id) throws NotFindException;
 	
 	public T readByName(String name);
 	

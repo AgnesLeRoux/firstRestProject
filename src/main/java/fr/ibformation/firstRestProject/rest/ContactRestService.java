@@ -3,13 +3,16 @@ package fr.ibformation.firstRestProject.rest;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
 import fr.ibformation.firstRestProject.dao.DAOContactInDatabase;
+import fr.ibformation.firstRestProject.dao.NotFindException;
 import fr.ibformation.firstRestProject.metier.Contact;
 
 @Path("/contact")
@@ -26,11 +29,24 @@ public class ContactRestService
 	}
 	
 	@GET
-	@Path("/read/{name}/{prenom}")
-	public String getContactByName(@PathParam("name") String name, @PathParam("prenom")String prenom)
+	@Path("/readName/{name}")
+	public String getContactByName(@PathParam("name") String name)
 	{
-		return "ok pour read by name" + name+prenom;
-		//return daoContact.readByName(name).toString();
+		return daoContact.readByName(name).toString();
+	}
+
+	@GET
+	@Path("/readId/{id}")
+	public String getContactById(@PathParam("id") int id)
+	{
+		Contact c;
+		try {
+			c = daoContact.readById(id);
+		} catch (NotFindException e) {
+			e.printStackTrace();
+			return e.getMessage();
+		}
+		return c.toString();
 		
 	}
 	
@@ -42,14 +58,39 @@ public class ContactRestService
 			@FormParam("age") int age,
 			@FormParam("numeroTelephone") String numeroTelephone)
 	{
-		System.out.println("coucou");
 		Contact c = new Contact( nom,  prenom,  age,  numeroTelephone);
 		daoContact.create(c);
 		System.out.println(c.toString());
-		return "contact inserted";
+		return "contact inserted "+ c.toString();
 	}
 	
+	@PUT
+	@Path("/update/{id}/{nom}/{prenom}")
+	public String updateContact(@PathParam("id") int id,
+			@PathParam("nom") String nom,
+			@PathParam("prenom") String prenom)
+	{
+		
+		Contact c = null;
+		try {
+			c = daoContact.readById(id);
+		} catch (NotFindException e) {
+			e.printStackTrace();
+			return e.getMessage();
+		}
+		c.setNomContact(nom);
+		c.setPrenomContact(prenom);
+		daoContact.update(c);
+		
+		return "ok";
+	}
 	
-	
+	@DELETE
+	@Path("/delete/{id}")
+	public String deleteContactById(@PathParam("id") int id)
+	{
+		daoContact.deleteById(id);
+		return "contact deleted";
+	}
 
 }

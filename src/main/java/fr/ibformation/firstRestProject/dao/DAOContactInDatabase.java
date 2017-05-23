@@ -36,7 +36,8 @@ public class DAOContactInDatabase implements DAOGeneric<Contact> {
 	}
 
 	@Override
-	public Contact readById(int id) {
+	public Contact readById(int id) throws NotFindException 
+	{
 		Contact c = null;
 		try 
 		{
@@ -44,11 +45,18 @@ public class DAOContactInDatabase implements DAOGeneric<Contact> {
 			PreparedStatement pstmnt = connectionDatabase.getConnection().prepareStatement(request);
 			pstmnt.setInt(1, id);
 			ResultSet rs = pstmnt.executeQuery();
-			while(rs.next())
+			
+			if(rs.next())
 			{
 				c = new Contact(rs.getInt("contact_id"),rs.getString("nom_contact"),rs.getString("prenom_contact"),
 						rs.getInt("age"),rs.getString("numero_telephone"));
 			}
+			else
+			{
+				throw new NotFindException("undefined Contact id "+id);
+			}
+				
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
