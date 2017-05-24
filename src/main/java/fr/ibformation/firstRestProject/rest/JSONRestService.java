@@ -60,6 +60,7 @@ public class JSONRestService
 	@Consumes("application/json")
 	public String createContact(Contact contact)
 	{
+		System.out.println("insertion contact hey");
 		daoContact.create(contact);
 		return "contact is inserted";
 	}

@@ -25,13 +25,12 @@ function get()
 		if(this.readyState == 4 && this.status == 200)
 		{
 			var myArr = JSON.parse(this.responseText);
-			console.log(myArr);
+			//console.log(myArr);
 			remplirLaZoneDeTexte(myArr);
 		}
 	};
 
 	xmlhttp.open('GET',url);
-	xmlhttp.setRequestHeader("Content-Type","application/json");
 	xmlhttp.send();
 }
 
