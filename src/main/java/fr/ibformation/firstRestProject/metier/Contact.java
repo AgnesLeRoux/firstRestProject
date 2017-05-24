@@ -1,5 +1,6 @@
 package fr.ibformation.firstRestProject.metier;
 
+
 public class Contact {
 	
 	private int id;
