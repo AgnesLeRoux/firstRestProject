@@ -35,7 +35,7 @@ public class DAOContactInDatabase implements DAOGeneric<Contact> {
 				
 	}
 
-	@Override
+	
 	public Contact readById(int id) throws NotFindException 
 	{
 		Contact c = null;
